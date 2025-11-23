@@ -4,7 +4,7 @@
 struct Food {
     int Burger;
     int Pizza;
-    int Drink;
+    int Cola;
 };
 
 void wallet(int *money) {
@@ -12,62 +12,71 @@ void wallet(int *money) {
     scanf("%d", money);
 }
 
-void order(struct Food menu, int *money) {
-    char input[20];
-    int found = 0;
-
-    printf("What do you want to order: ");
-    scanf("%s", input);
-
-    if (strcmp(input, "Burger") == 0) {
-        if (*money >= menu.Burger) {
-            printf("You bought a Burger.\n");
-            *money -= menu.Burger;
-        } else {
-            printf("Not enough money.\n");
-        }
-        found = 1;
-    }
-
-    else if (strcmp(input, "Pizza") == 0) {
-        if (*money >= menu.Pizza) {
-            printf("You bought a Pizza.\n");
-            *money -= menu.Pizza;
-        } else {
-            printf("Not enough money.\n");
-        }
-        found = 1;
-    }
-
-    else if (strcmp(input, "Drink") == 0) {
-        if (*money >= menu.Drink) {
-            printf("You bought a Drink.\n");
-            *money -= menu.Drink;
-        } else {
-            printf("Not enough money.\n");
-        }
-        found = 1;
-    }
-
-    if (!found) {
-        printf("Item not found.\n");
-    }
+void showMenu(struct Food menu) {
+    printf("\n===== FOOD MENU =====\n");
+    printf("Burger : %d\n", menu.Burger);
+    printf("Pizza  : %d\n", menu.Pizza);
+    printf("Cola  : %d\n", menu.Cola);
+    printf("=====================\n");
 }
 
-void final_balance(int money) {
-    printf("Your final balance: %d\n", money);
+int addToBasket(struct Food menu, char item[]) {
+    if (strcmp(item, "Burger") == 0)
+        return menu.Burger;
+
+    else if (strcmp(item, "Pizza") == 0)
+        return menu.Pizza;
+
+    else if (strcmp(item, "Cola") == 0)
+        return menu.Cola;
+
+    else
+        return -1; // Item not found
+}
+
+void checkout(int *money, int basketTotal) {
+    printf("\n===== CHECKOUT =====\n");
+    printf("Total price: %d\n", basketTotal);
+
+    if (*money >= basketTotal) {
+        *money -= basketTotal;
+        printf("Purchase successful!\n");
+    } else {
+        printf("Not enough money to buy all items.\n");
+    }
+
+    printf("Remaining balance: %d\n", *money);
 }
 
 int main() {
-    struct Food menu;
-    menu.Burger = 50;
-    menu.Pizza = 80;
-    menu.Drink = 20;
-
+    struct Food menu = {50, 80, 20};
     int money;
+    int basket = 0;
+
     wallet(&money);
-    order(menu, &money);
-    final_balance(money);
+    showMenu(menu);
+
+    char choice[20];
+
+    while (1) {
+        printf("What do you want to buy (type 'checkout' to finish): ");
+        scanf("%s", choice);
+
+        if (strcmp(choice, "checkout") == 0) {
+            break;
+        }
+
+        int price = addToBasket(menu, choice);
+
+        if (price == -1) {
+            printf("Item not found.\n");
+        } else {
+            basket += price;
+            printf("%s added to basket. Basket total = %d\n\n", choice, basket);
+        }
+    }
+
+    checkout(&money, basket);
 
     return 0;
 }
