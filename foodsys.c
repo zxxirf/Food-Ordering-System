@@ -1,37 +1,22 @@
 #include <stdio.h>
 #include <string.h>
 
-struct Food {
-    int Burger;
-    int Pizza;
-    int Cola;
-};
-
 void wallet(int *money) {
     printf("How much money do you have: ");
     scanf("%d", money);
 }
 
-void showMenu(struct Food menu) {
+void showMenu(int burger, int pizza, int cola) {
     printf("\n===== FOOD MENU =====\n");
-    printf("Burger : %d\n", menu.Burger);
-    printf("Pizza  : %d\n", menu.Pizza);
-    printf("Cola  : %d\n", menu.Cola);
+    printf("Burger : %d\nPizza  : %d\nCola   : %d\n", burger, pizza, cola);
     printf("=====================\n");
 }
 
-int addToBasket(struct Food menu, char item[]) {
-    if (strcmp(item, "Burger") == 0)
-        return menu.Burger;
-
-    else if (strcmp(item, "Pizza") == 0)
-        return menu.Pizza;
-
-    else if (strcmp(item, "Cola") == 0)
-        return menu.Cola;
-
-    else
-        return -1; // Item not found
+int addToBasket(int burger, int pizza, int cola, char item[]) {
+    if (strcmp(item, "Burger") == 0) return burger;
+    if (strcmp(item, "Pizza") == 0)  return pizza;
+    if (strcmp(item, "Cola") == 0)   return cola;
+    return -1; // Item not found
 }
 
 void checkout(int *money, int basketTotal) {
@@ -49,25 +34,20 @@ void checkout(int *money, int basketTotal) {
 }
 
 int main() {
-    struct Food menu = {50, 80, 20};
-    int money;
-    int basket = 0;
+    int burger = 50, pizza = 80, cola = 20;
+    int money, basket = 0;
+    char choice[20];
 
     wallet(&money);
-    showMenu(menu);
-
-    char choice[20];
+    showMenu(burger, pizza, cola);
 
     while (1) {
         printf("What do you want to buy (type 'checkout' to finish): ");
         scanf("%s", choice);
 
-        if (strcmp(choice, "checkout") == 0) {
-            break;
-        }
+        if (strcmp(choice, "checkout") == 0) break;
 
-        int price = addToBasket(menu, choice);
-
+        int price = addToBasket(burger, pizza, cola, choice);
         if (price == -1) {
             printf("Item not found.\n");
         } else {
@@ -77,6 +57,5 @@ int main() {
     }
 
     checkout(&money, basket);
-
     return 0;
 }
